@@ -70,7 +70,12 @@
   // ── Apply CSS vars for sliders ────────────────────────────────────────────
   function applyCSSVars() {
     document.documentElement.style.setProperty('--photo-dim',    (photoDim    / 100).toFixed(2));
-    document.documentElement.style.setProperty('--card-opacity', (cardOpacity / 100).toFixed(2));
+    const cardVal = (cardOpacity / 100).toFixed(2);
+    document.documentElement.style.setProperty('--card-opacity', cardVal);
+    const rgb = getComputedStyle(document.documentElement).getPropertyValue('--bg-card-rgb').trim();
+    if (rgb) {
+      document.documentElement.style.setProperty('--bg-card', `rgba(${rgb},${cardVal})`);
+    }
   }
 
   // ── Apply theme ───────────────────────────────────────────────────────────
@@ -217,12 +222,22 @@
   }
 
   // ── Live sliders ──────────────────────────────────────────────────────────
+  const settingsSheet = document.querySelector('.settings-sheet');
+
+  function peekShow() { if (settingsSheet) settingsSheet.style.opacity = '0.15'; }
+  function peekHide() { if (settingsSheet) settingsSheet.style.opacity = ''; }
+
   if (sDimSlider) {
     sDimSlider.addEventListener('input', () => {
       photoDim = parseInt(sDimSlider.value, 10);
       if (sDimVal) sDimVal.textContent = `${photoDim}%`;
       applyCSSVars();
     });
+    sDimSlider.addEventListener('mousedown',  peekShow);
+    sDimSlider.addEventListener('touchstart', peekShow);
+    sDimSlider.addEventListener('mouseup',    peekHide);
+    sDimSlider.addEventListener('touchend',   peekHide);
+    sDimSlider.addEventListener('mouseleave', peekHide);
   }
 
   if (sCardSlider) {
@@ -231,6 +246,11 @@
       if (sCardVal) sCardVal.textContent = `${cardOpacity}%`;
       applyCSSVars();
     });
+    sCardSlider.addEventListener('mousedown',  peekShow);
+    sCardSlider.addEventListener('touchstart', peekShow);
+    sCardSlider.addEventListener('mouseup',    peekHide);
+    sCardSlider.addEventListener('touchend',   peekHide);
+    sCardSlider.addEventListener('mouseleave', peekHide);
   }
 
   // ── Save PIN ──────────────────────────────────────────────────────────────
