@@ -43,25 +43,26 @@
 
   // ── Sheet-based sleep/wake schedule ──────────────────────────────────────
   // Reads the Settings tab from the Sheet every 10 min.
-  // Column A = key, Column B = value
-  // Supported keys: sleep_time (e.g. 22:00), wake_time (e.g. 07:00), theme
-  // When sleep_time arrives → sleep screen shows (display goes black)
-  // When wake_time arrives  → sleep screen hides (display wakes)
-  // This lets Monique control all screens remotely just by editing the Sheet.
+  // Sheet columns: Key | Value
+  // Row 2: SLEEP | 20:00   (time display goes black)
+  // Row 3: START | 06:00   (time display wakes up)
+  // Monique edits these two cells to control all screens remotely.
+  // Theme is NOT controlled here — set per-TV in the on-screen settings.
   async function syncSheetSchedule() {
     const rows = await sheetFetch(CONFIG.GIDS.settings);
     if (!rows || !rows.length) return;
 
     const map = {};
     rows.forEach(r => {
-      const k = (r['key'] || r['Key'] || '').trim().toLowerCase();
-      const v = (r['value'] || r['Value'] || '').trim();
+      // Match any casing of key/value columns
+      const k = (r['key'] || r['Key'] || r['KEY'] || '').trim().toUpperCase();
+      const v = (r['value'] || r['Value'] || r['VALUE'] || '').trim();
       if (k && v) map[k] = v;
     });
 
-    if (map['sleep_time']) Store.set('wf_sheet_sleep', map['sleep_time']);
-    if (map['wake_time'])  Store.set('wf_sheet_wake',  map['wake_time']);
-    if (map['theme'])      Store.set('wf_sheet_theme', map['theme']);
+    // SLEEP = when display goes black, START = when it wakes
+    if (map['SLEEP']) Store.set('wf_sheet_sleep', map['SLEEP']);
+    if (map['START']) Store.set('wf_sheet_wake',  map['START']);
 
     applySheetSchedule();
   }
@@ -73,12 +74,16 @@
 
     const now  = new Date();
     const hm   = now.getHours() * 60 + now.getMinutes();
-    const [sh, sm] = sleepT.split(':').map(Number);
-    const [wh, wm] = wakeT.split(':').map(Number);
-    const sleepM = sh * 60 + sm;
-    const wakeM  = wh * 60 + wm;
 
-    // Handle midnight crossover (e.g. sleep=22:00, wake=07:00)
+    function toMinutes(t) {
+      const parts = t.split(':').map(Number);
+      return (parts[0] || 0) * 60 + (parts[1] || 0);
+    }
+
+    const sleepM = toMinutes(sleepT);
+    const wakeM  = toMinutes(wakeT);
+
+    // Handle midnight crossover (e.g. SLEEP=20:00, START=06:00)
     let isSleep;
     if (sleepM > wakeM) {
       isSleep = hm >= sleepM || hm < wakeM;
@@ -98,7 +103,6 @@
     }
   }
 
-  // Run on boot and every minute / every refresh interval
   syncSheetSchedule();
   setInterval(applySheetSchedule, 60000);
   setInterval(syncSheetSchedule, CONFIG.TIMING.sheet_refresh);
