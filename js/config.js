@@ -31,12 +31,13 @@ const CONFIG = {
   SHEET_ID: '17Uze4Qz_0cXsnj4KS4cFmabK67F_jGG0PR_vtnegrK4',
 
   GIDS: {
-    directory_310: '1001',        // ← update after creating tab
-    directory_320: '1002',        // ← update after creating tab
-    directory_330: '1003',        // ← update after creating tab
-    directory_340: '1004',        // ← update after creating tab
-    events:        '871114333',   // existing Events tab
-    backgrounds:   '589321751',   // existing Backgrounds tab
+    directory_310: '1627497967',  // Directory_310 tab
+    directory_320: '702701545',   // Directory_320 tab
+    directory_330: '1856569291',  // Directory_330 tab
+    directory_340: '1644683988',  // Directory_340 tab
+    events:        '871114333',   // Events tab
+    backgrounds:   '589321751',   // Backgrounds tab
+    settings:      '2028632494',  // Settings tab (sleep/wake schedule)
   },
 
   // ── Weather (Open-Meteo, free, no key needed) ───────────────────────────────
