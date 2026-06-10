@@ -7,7 +7,7 @@
   <title>The Waterfront at Catalina Landing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -195,17 +195,32 @@
               <option value="340">340 Golden Shore</option>
             </select>
           </div>
-          <div class="s-row" style="padding-top: 18px;">
-            <span class="s-label">Theme</span>
+          <div class="s-row" style="padding-top: 18px; align-items: flex-start;">
+            <span class="s-label" style="padding-top:6px;">Theme</span>
             <div class="theme-picker">
-              <button class="theme-swatch active" data-theme="obsidian" title="Obsidian">
-                <span class="theme-swatch-label">Obsidian</span>
+              <button class="theme-swatch active" data-theme="obsidian">
+                <div class="swatch-circle" data-t="obsidian"></div>
+                <span class="swatch-label">Obsidian</span>
               </button>
-              <button class="theme-swatch" data-theme="stone" title="Stone">
-                <span class="theme-swatch-label">Stone</span>
+              <button class="theme-swatch" data-theme="stone">
+                <div class="swatch-circle" data-t="stone"></div>
+                <span class="swatch-label">Stone</span>
               </button>
-              <button class="theme-swatch" data-theme="navy" title="Navy">
-                <span class="theme-swatch-label">Navy</span>
+              <button class="theme-swatch" data-theme="navy">
+                <div class="swatch-circle" data-t="navy"></div>
+                <span class="swatch-label">Navy</span>
+              </button>
+              <button class="theme-swatch" data-theme="ivory">
+                <div class="swatch-circle" data-t="ivory"></div>
+                <span class="swatch-label">Ivory</span>
+              </button>
+              <button class="theme-swatch" data-theme="slate">
+                <div class="swatch-circle" data-t="slate"></div>
+                <span class="swatch-label">Slate</span>
+              </button>
+              <button class="theme-swatch" data-theme="midnight">
+                <div class="swatch-circle" data-t="midnight"></div>
+                <span class="swatch-label">Midnight</span>
               </button>
             </div>
           </div>
@@ -215,6 +230,26 @@
               <option value="manual">Manual (always use selected theme)</option>
               <option value="auto">Auto (switch on schedule)</option>
             </select>
+          </div>
+        </div>
+
+        <div class="s-section">
+          <p class="s-section-title">Display</p>
+          <div class="s-slider-row">
+            <div class="s-slider-top">
+              <span class="s-label">Photo darkness</span>
+              <span class="s-slider-val" id="s-dim-val">55%</span>
+            </div>
+            <input type="range" id="s-dim-slider" min="0" max="100" value="55" step="5">
+            <p class="s-hint">How dark the background photo is dimmed.</p>
+          </div>
+          <div class="s-slider-row" style="margin-top:12px;">
+            <div class="s-slider-top">
+              <span class="s-label">Card opacity</span>
+              <span class="s-slider-val" id="s-card-val">88%</span>
+            </div>
+            <input type="range" id="s-card-slider" min="20" max="100" value="88" step="4">
+            <p class="s-hint">How solid the info boxes appear over the photo.</p>
           </div>
         </div>
 
