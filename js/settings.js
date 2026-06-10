@@ -1,32 +1,34 @@
-// settings.js — PIN, 6 themes, building, schedule, sliders, building info
+// settings.js — PIN, 6 themes, building, schedule, sliders, transitions, building info
+// Live-preview model: every change applies immediately; Save commits to localStorage;
+// Close / click-outside reverts to the last saved snapshot.
 (function Settings() {
   'use strict';
 
   const THEMES = ['obsidian','stone','navy','ivory','slate','midnight'];
 
-  // ── State ─────────────────────────────────────────────────────────────────
-  let pin        = Store.get('wf_pin',          CONFIG.DEFAULTS.pin);
-  let building   = Store.get('wf_building',     CONFIG.DEFAULTS.building);
-  let theme      = Store.get('wf_theme',        CONFIG.DEFAULTS.theme);
-  let themeMode  = Store.get('wf_theme_mode',   CONFIG.DEFAULTS.theme_mode);
-  let dayTheme   = Store.get('wf_day_theme',    'ivory');
-  let nightTheme = Store.get('wf_night_theme',  'obsidian');
-  let wakeTime   = Store.get('wf_wake',         '07:00');
-  let sleepTime  = Store.get('wf_sleep',        '20:00');
-  let showEvents = Store.get('wf_show_events',  CONFIG.DEFAULTS.show_events);
-  let showProp   = Store.get('wf_show_property',CONFIG.DEFAULTS.show_property);
-  let photoDim   = Store.get('wf_photo_dim',    55);   // 0–100
-  let cardOpacity= Store.get('wf_card_opacity', 88);   // 0–100
+  // ── State (live / draft values) ───────────────────────────────────────────
+  let pin         = Store.get('wf_pin',          CONFIG.DEFAULTS.pin);
+  let building    = Store.get('wf_building',     CONFIG.DEFAULTS.building);
+  let theme       = Store.get('wf_theme',        CONFIG.DEFAULTS.theme);
+  let themeMode   = Store.get('wf_theme_mode',   CONFIG.DEFAULTS.theme_mode);
+  let dayTheme    = Store.get('wf_day_theme',    'ivory');
+  let nightTheme  = Store.get('wf_night_theme',  'obsidian');
+  let showEvents  = Store.get('wf_show_events',  CONFIG.DEFAULTS.show_events);
+  let showProp    = Store.get('wf_show_property',CONFIG.DEFAULTS.show_property);
+  let photoDim    = Store.get('wf_photo_dim',    55);   // 0–100
+  let cardOpacity = Store.get('wf_card_opacity', 88);   // 0–100
+  let transition  = Store.get('wf_transition',   'simple');  // simple | directional
 
   // Building info
   let infoLogoName = Store.get('wf_info_logo_name', CONFIG.PROPERTY.name);
   let infoLogoSub  = Store.get('wf_info_logo_sub',  CONFIG.PROPERTY.subtitle);
-  let infoPhone    = Store.get('wf_info_phone',      CONFIG.PROPERTY.phone);
-  let infoEmail    = Store.get('wf_info_email',      CONFIG.PROPERTY.email);
-  let infoAddr     = Store.get('wf_info_addr',       CONFIG.PROPERTY.address);
+  let infoPhone    = Store.get('wf_info_phone',     CONFIG.PROPERTY.phone);
+  let infoEmail    = Store.get('wf_info_email',     CONFIG.PROPERTY.email);
+  let infoAddr     = Store.get('wf_info_addr',      CONFIG.PROPERTY.address);
 
   let pinBuffer = '';
   let unlocked  = false;
+  let savedState = null;   // snapshot of committed values, captured on open / save
 
   // ── DOM ───────────────────────────────────────────────────────────────────
   const overlay     = document.getElementById('settings-overlay');
@@ -45,8 +47,7 @@
   const sSchedule   = document.getElementById('schedule-section');
   const sDayTheme   = document.getElementById('s-day-theme');
   const sNightTheme = document.getElementById('s-night-theme');
-  const sWake       = document.getElementById('s-wake');
-  const sSleep      = document.getElementById('s-sleep');
+  const sTransition = document.getElementById('s-transition');
   const sShowEv     = document.getElementById('s-show-events');
   const sShowPr     = document.getElementById('s-show-property');
   const sNewPin     = document.getElementById('s-new-pin');
@@ -55,10 +56,10 @@
   const sReset      = document.getElementById('s-reset');
 
   // Sliders
-  const sDimSlider    = document.getElementById('s-dim-slider');
-  const sDimVal       = document.getElementById('s-dim-val');
-  const sCardSlider   = document.getElementById('s-card-slider');
-  const sCardVal      = document.getElementById('s-card-val');
+  const sDimSlider  = document.getElementById('s-dim-slider');
+  const sDimVal     = document.getElementById('s-dim-val');
+  const sCardSlider = document.getElementById('s-card-slider');
+  const sCardVal    = document.getElementById('s-card-val');
 
   // Building info
   const iLogoName = document.getElementById('info-logo-name');
@@ -67,11 +68,28 @@
   const iEmail    = document.getElementById('info-email');
   const iAddr     = document.getElementById('info-addr');
 
-  // ── Apply CSS vars for sliders ────────────────────────────────────────────
+  // ── Snapshot / restore for live-preview-with-revert ───────────────────────
+  function snapshot() {
+    return {
+      building, theme, themeMode, dayTheme, nightTheme, showEvents, showProp,
+      photoDim, cardOpacity, transition,
+      infoLogoName, infoLogoSub, infoPhone, infoEmail, infoAddr,
+    };
+  }
+  function restore(s) {
+    if (!s) return;
+    ({
+      building, theme, themeMode, dayTheme, nightTheme, showEvents, showProp,
+      photoDim, cardOpacity, transition,
+      infoLogoName, infoLogoSub, infoPhone, infoEmail, infoAddr,
+    } = s);
+  }
+
+  // ── Apply CSS vars for sliders (cards + scrim) ────────────────────────────
   function applyCSSVars() {
-    document.documentElement.style.setProperty('--photo-dim',    (photoDim    / 100).toFixed(2));
+    document.documentElement.style.setProperty('--photo-dim', (photoDim / 100).toFixed(2));
     const cardVal = (cardOpacity / 100).toFixed(2);
-    document.documentElement.style.setProperty('--card-opacity', cardVal);
+    // Read the active theme's RGB and rebuild --bg-card so cards always match the live theme
     const rgb = getComputedStyle(document.documentElement).getPropertyValue('--bg-card-rgb').trim();
     if (rgb) {
       document.documentElement.style.setProperty('--bg-card', `rgba(${rgb},${cardVal})`);
@@ -82,13 +100,15 @@
   function applyTheme(t) {
     if (!THEMES.includes(t)) t = 'obsidian';
     document.documentElement.setAttribute('data-theme', t);
+    applyCSSVars();   // re-derive card color for the new theme's RGB
   }
 
+  // Auto theme schedule reads the Sheet-managed START/SLEEP times (no on-screen fields)
   function resolveAutoTheme() {
     const now  = new Date();
     const hm   = now.getHours() * 60 + now.getMinutes();
-    const [wh, wm] = (wakeTime  || '07:00').split(':').map(Number);
-    const [sh, sm] = (sleepTime || '20:00').split(':').map(Number);
+    const [wh, wm] = (Store.get('wf_sheet_wake',  '07:00') || '07:00').split(':').map(Number);
+    const [sh, sm] = (Store.get('wf_sheet_sleep', '20:00') || '20:00').split(':').map(Number);
     const wakeM  = wh * 60 + wm;
     const sleepM = sh * 60 + sm;
     const isDay  = hm >= wakeM && hm < sleepM;
@@ -99,8 +119,10 @@
     applyTheme(themeMode === 'auto' ? resolveAutoTheme() : theme);
   }
 
-  applyCurrentTheme();
-  setInterval(applyCurrentTheme, 60000);
+  // ── Apply transition style ────────────────────────────────────────────────
+  function applyTransition() {
+    document.documentElement.setAttribute('data-transition', transition);
+  }
 
   // ── Apply building ─────────────────────────────────────────────────────────
   function applyBuilding(b) {
@@ -132,8 +154,23 @@
     if (e) e.textContent = infoEmail;
   }
 
+  // ── Apply everything (used on boot, save, and revert) ─────────────────────
+  function applyAll() {
+    applyCurrentTheme();
+    applyBuilding(building);
+    applyPanelVisibility();
+    applyBuildingInfo();
+    applyCSSVars();
+    applyTransition();
+  }
+
+  applyCurrentTheme();
+  applyTransition();
+  setInterval(applyCurrentTheme, 60000);
+
   // ── Open / close ──────────────────────────────────────────────────────────
   function openSettings() {
+    savedState = snapshot();          // remember committed state for revert
     overlay.classList.remove('hidden');
     pinBuffer = ''; unlocked = false;
     updateDots();
@@ -142,25 +179,27 @@
     pinErr.classList.add('hidden');
   }
 
+  // Close == revert to last saved state (discard unsaved live preview)
   function closeSettings() {
+    restore(savedState);
+    applyAll();
     overlay.classList.add('hidden');
     unlocked = false; pinBuffer = '';
   }
 
   function populateForm() {
-    if (sBldg)       sBldg.value      = building;
-    if (sThemeMode)  sThemeMode.value = themeMode;
-    if (sDayTheme)   sDayTheme.value  = dayTheme;
-    if (sNightTheme) sNightTheme.value= nightTheme;
-    if (sWake)       sWake.value      = wakeTime;
-    if (sSleep)      sSleep.value     = sleepTime;
-    if (sShowEv)     sShowEv.checked  = showEvents;
-    if (sShowPr)     sShowPr.checked  = showProp;
-    if (iLogoName)   iLogoName.value  = infoLogoName;
-    if (iLogoSub)    iLogoSub.value   = infoLogoSub;
-    if (iPhone)      iPhone.value     = infoPhone;
-    if (iEmail)      iEmail.value     = infoEmail;
-    if (iAddr)       iAddr.value      = infoAddr;
+    if (sBldg)       sBldg.value       = building;
+    if (sThemeMode)  sThemeMode.value  = themeMode;
+    if (sDayTheme)   sDayTheme.value   = dayTheme;
+    if (sNightTheme) sNightTheme.value = nightTheme;
+    if (sTransition) sTransition.value = transition;
+    if (sShowEv)     sShowEv.checked   = showEvents;
+    if (sShowPr)     sShowPr.checked   = showProp;
+    if (iLogoName)   iLogoName.value   = infoLogoName;
+    if (iLogoSub)    iLogoSub.value    = infoLogoSub;
+    if (iPhone)      iPhone.value      = infoPhone;
+    if (iEmail)      iEmail.value      = infoEmail;
+    if (iAddr)       iAddr.value       = infoAddr;
 
     // Sliders
     if (sDimSlider)  { sDimSlider.value  = photoDim;    if (sDimVal)  sDimVal.textContent  = `${photoDim}%`;    }
@@ -205,7 +244,7 @@
     });
   });
 
-  // ── Theme swatches ────────────────────────────────────────────────────────
+  // ── Theme swatches (live preview) ─────────────────────────────────────────
   document.querySelectorAll('.theme-swatch').forEach(sw => {
     sw.addEventListener('click', () => {
       document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
@@ -215,42 +254,41 @@
     });
   });
 
+  // ── Live preview wiring for the rest of the controls ──────────────────────
   if (sThemeMode) {
     sThemeMode.addEventListener('change', () => {
-      if (sSchedule) sSchedule.style.display = sThemeMode.value === 'auto' ? '' : 'none';
+      themeMode = sThemeMode.value;
+      if (sSchedule) sSchedule.style.display = themeMode === 'auto' ? '' : 'none';
+      applyCurrentTheme();
     });
   }
+  if (sDayTheme)   sDayTheme.addEventListener('change',  () => { dayTheme   = sDayTheme.value;   applyCurrentTheme(); });
+  if (sNightTheme) sNightTheme.addEventListener('change',() => { nightTheme = sNightTheme.value; applyCurrentTheme(); });
+  if (sTransition) sTransition.addEventListener('change',() => { transition = sTransition.value; applyTransition(); });
+  if (sBldg)       sBldg.addEventListener('change',      () => { building   = sBldg.value;       applyBuilding(building); });
+  if (sShowEv)     sShowEv.addEventListener('change',    () => { showEvents = sShowEv.checked;   applyPanelVisibility(); });
+  if (sShowPr)     sShowPr.addEventListener('change',    () => { showProp   = sShowPr.checked;   applyPanelVisibility(); });
 
-  // ── Live sliders ──────────────────────────────────────────────────────────
-  const settingsSheet = document.querySelector('.settings-sheet');
+  if (iLogoName) iLogoName.addEventListener('input', () => { infoLogoName = iLogoName.value; applyBuildingInfo(); });
+  if (iLogoSub)  iLogoSub.addEventListener('input',  () => { infoLogoSub  = iLogoSub.value;  applyBuildingInfo(); });
+  if (iPhone)    iPhone.addEventListener('input',    () => { infoPhone    = iPhone.value;    applyBuildingInfo(); });
+  if (iEmail)    iEmail.addEventListener('input',    () => { infoEmail    = iEmail.value;    applyBuildingInfo(); });
+  if (iAddr)     iAddr.addEventListener('input',     () => { infoAddr     = iAddr.value;     applyBuildingInfo(); });
 
-  function peekShow() { if (settingsSheet) settingsSheet.style.opacity = '0.15'; }
-  function peekHide() { if (settingsSheet) settingsSheet.style.opacity = ''; }
-
+  // ── Live sliders (display updates in real time while dragging) ────────────
   if (sDimSlider) {
     sDimSlider.addEventListener('input', () => {
       photoDim = parseInt(sDimSlider.value, 10);
       if (sDimVal) sDimVal.textContent = `${photoDim}%`;
       applyCSSVars();
     });
-    sDimSlider.addEventListener('mousedown',  peekShow);
-    sDimSlider.addEventListener('touchstart', peekShow);
-    sDimSlider.addEventListener('mouseup',    peekHide);
-    sDimSlider.addEventListener('touchend',   peekHide);
-    sDimSlider.addEventListener('mouseleave', peekHide);
   }
-
   if (sCardSlider) {
     sCardSlider.addEventListener('input', () => {
       cardOpacity = parseInt(sCardSlider.value, 10);
       if (sCardVal) sCardVal.textContent = `${cardOpacity}%`;
       applyCSSVars();
     });
-    sCardSlider.addEventListener('mousedown',  peekShow);
-    sCardSlider.addEventListener('touchstart', peekShow);
-    sCardSlider.addEventListener('mouseup',    peekHide);
-    sCardSlider.addEventListener('touchend',   peekHide);
-    sCardSlider.addEventListener('mouseleave', peekHide);
   }
 
   // ── Save PIN ──────────────────────────────────────────────────────────────
@@ -268,35 +306,17 @@
     });
   }
 
-  // ── Save all ──────────────────────────────────────────────────────────────
+  // ── Save all (commit live values to localStorage) ─────────────────────────
   if (sSave) {
     sSave.addEventListener('click', () => {
       if (!unlocked) return;
-
-      building   = sBldg?.value        || building;
-      themeMode  = sThemeMode?.value   || themeMode;
-      dayTheme   = sDayTheme?.value    || dayTheme;
-      nightTheme = sNightTheme?.value  || nightTheme;
-      wakeTime   = sWake?.value        || wakeTime;
-      sleepTime  = sSleep?.value       || sleepTime;
-      showEvents = sShowEv?.checked    ?? showEvents;
-      showProp   = sShowPr?.checked    ?? showProp;
-      photoDim   = parseInt(sDimSlider?.value  || photoDim,    10);
-      cardOpacity= parseInt(sCardSlider?.value || cardOpacity, 10);
-
-      infoLogoName = iLogoName?.value  || infoLogoName;
-      infoLogoSub  = iLogoSub?.value   || infoLogoSub;
-      infoPhone    = iPhone?.value     || infoPhone;
-      infoEmail    = iEmail?.value     || infoEmail;
-      infoAddr     = iAddr?.value      || infoAddr;
 
       Store.set('wf_building',      building);
       Store.set('wf_theme',         theme);
       Store.set('wf_theme_mode',    themeMode);
       Store.set('wf_day_theme',     dayTheme);
       Store.set('wf_night_theme',   nightTheme);
-      Store.set('wf_wake',          wakeTime);
-      Store.set('wf_sleep',         sleepTime);
+      Store.set('wf_transition',    transition);
       Store.set('wf_show_events',   showEvents);
       Store.set('wf_show_property', showProp);
       Store.set('wf_photo_dim',     photoDim);
@@ -307,12 +327,10 @@
       Store.set('wf_info_email',    infoEmail);
       Store.set('wf_info_addr',     infoAddr);
 
-      applyCurrentTheme();
-      applyBuilding(building);
-      applyPanelVisibility();
-      applyBuildingInfo();
-      applyCSSVars();
-      closeSettings();
+      savedState = snapshot();   // committed state is now the live state
+      applyAll();
+      overlay.classList.add('hidden');
+      unlocked = false; pinBuffer = '';
     });
   }
 
@@ -329,11 +347,14 @@
   if (closeBtn) closeBtn.addEventListener('click', closeSettings);
   if (backdrop) backdrop.addEventListener('click', closeSettings);
 
-  // ── Sleep screen tap to wake ──────────────────────────────────────────────
+  // ── Sleep screen tap to wake (delegates to main.js manual-wake) ───────────
   if (sleepScreen) {
     sleepScreen.addEventListener('click', () => {
-      sleepScreen.classList.add('hidden');
-      setTimeout(() => { if (themeMode === 'auto') applyCurrentTheme(); }, 60000);
+      if (window.Lifecycle && typeof Lifecycle.manualWake === 'function') {
+        Lifecycle.manualWake();
+      } else {
+        sleepScreen.classList.add('hidden');
+      }
     });
   }
 
@@ -346,15 +367,13 @@
   });
 
   // ── Boot: apply all ───────────────────────────────────────────────────────
-  applyBuilding(building);
-  applyPanelVisibility();
-  applyBuildingInfo();
-  applyCSSVars();
+  applyAll();
 
   window.AppSettings = {
-    getBuilding:   () => building,
-    isEventsShown: () => showEvents,
-    isPropShown:   () => showProp,
-    getTheme:      () => theme,
+    getBuilding:    () => building,
+    isEventsShown:  () => showEvents,
+    isPropShown:    () => showProp,
+    getTheme:       () => theme,
+    getTransition:  () => transition,
   };
 })();

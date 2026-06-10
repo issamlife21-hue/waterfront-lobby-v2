@@ -1,6 +1,6 @@
 // sw.js — Service Worker, offline app shell caching
 // IMPORTANT: bump CACHE_VERSION on every deployment that changes any file below
-const CACHE_VERSION = 'wf-v2-3';
+const CACHE_VERSION = 'wf-v2-4';
 const CACHE_NAME    = CACHE_VERSION;
 
 const APP_SHELL = [
@@ -17,7 +17,7 @@ const APP_SHELL = [
   '/js/rotation.js',
   '/js/main.js',
   '/assets/logo.svg',
-  'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap',
+  'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap',
 ];
 
 // ── Install: cache app shell ─────────────────────────────────────────────────
@@ -48,6 +48,7 @@ self.addEventListener('fetch', e => {
   const isLiveData = (
     url.includes('docs.google.com') ||
     url.includes('api.open-meteo.com') ||
+    url.includes('tidesandcurrents.noaa.gov') ||
     url.includes('wp.com') ||
     url.includes('smushcdn') ||
     url.includes('hollywoodlocations')

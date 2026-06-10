@@ -26,20 +26,26 @@
 
   acquireWakeLock();
 
-  // ── Keep-alive: activity simulation ─────────────────────────────────────
-  const ping = document.createElement('div');
-  ping.style.cssText = 'position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;';
-  ping.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(ping);
-  let pingCount = 0;
-  setInterval(() => { ping.textContent = ++pingCount; }, 20000);
+  // ── Manual wake (tap sleep screen) — keeps display awake until next START ──
+  let manualWakeUntil = 0;
 
-  // ── Keep-alive: CSS shimmer ──────────────────────────────────────────────
-  let shimmerState = false;
-  setInterval(() => {
-    shimmerState = !shimmerState;
-    ping.style.transform = shimmerState ? 'translateX(1px)' : 'translateX(0)';
-  }, 25000);
+  function nextStartTs() {
+    const wakeT = Store.get('wf_sheet_wake', '07:00') || '07:00';
+    const [wh, wm] = wakeT.split(':').map(Number);
+    const now    = new Date();
+    const target = new Date(now);
+    target.setHours(wh || 0, wm || 0, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+    return target.getTime();
+  }
+
+  function manualWake() {
+    manualWakeUntil = nextStartTs();
+    const ss = document.getElementById('sleep-screen');
+    if (ss) { ss.classList.add('hidden'); ss.setAttribute('aria-hidden', 'true'); }
+  }
+
+  window.Lifecycle = { manualWake };
 
   // ── Sheet-based sleep/wake schedule ──────────────────────────────────────
   // Reads the Settings tab from the Sheet every 10 min.
@@ -94,10 +100,18 @@
     const sleepScreen = document.getElementById('sleep-screen');
     if (!sleepScreen) return;
 
+    // Manual wake active: stay awake until the next scheduled START arrives
+    if (isSleep && Date.now() < manualWakeUntil) {
+      sleepScreen.classList.add('hidden');
+      sleepScreen.setAttribute('aria-hidden', 'true');
+      return;
+    }
+
     if (isSleep) {
       sleepScreen.classList.remove('hidden');
       sleepScreen.setAttribute('aria-hidden', 'false');
     } else {
+      manualWakeUntil = 0;   // schedule naturally woke; clear manual override
       sleepScreen.classList.add('hidden');
       sleepScreen.setAttribute('aria-hidden', 'true');
     }

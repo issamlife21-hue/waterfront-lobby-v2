@@ -1,4 +1,4 @@
-// rotation.js — panel auto-rotation, nav dot highlighting, watchdog
+// rotation.js — panel auto-rotation, nav dot highlighting, per-cycle watchdog
 (function Rotation() {
   'use strict';
 
@@ -7,26 +7,42 @@
   let idx          = 0;
   let rotateTimer  = null;
   let watchdogTimer= null;
-  let lastChange   = Date.now();
 
   // ── Build sequence based on enabled panels ──────────────────────────────
   function buildSequence() {
     return ALL_PANELS.filter(p => {
-      if (p === 'events'   && window.AppSettings && !AppSettings.isEventsShown())  return false;
-      if (p === 'property' && window.AppSettings && !AppSettings.isPropShown())    return false;
+      if (p === 'events'   && window.AppSettings && !AppSettings.isEventsShown()) return false;
+      if (p === 'property' && window.AppSettings && !AppSettings.isPropShown())   return false;
       return true;
     });
   }
 
   // ── Activate a panel ────────────────────────────────────────────────────
   function activate(name) {
+    const directional = !!(window.AppSettings &&
+                           typeof AppSettings.getTransition === 'function' &&
+                           AppSettings.getTransition() === 'directional');
+
     document.querySelectorAll('.panel').forEach(el => {
-      el.classList.toggle('active', el.id === `panel-${name}`);
+      const isTarget = el.id === `panel-${name}`;
+      if (isTarget) {
+        el.classList.remove('panel-leave');
+        el.classList.add('active');
+      } else if (el.classList.contains('active')) {
+        el.classList.remove('active');
+        if (directional) {
+          // outgoing panel slides out to the left, then resets
+          el.classList.add('panel-leave');
+          setTimeout(() => el.classList.remove('panel-leave'), 400);
+        }
+      } else {
+        el.classList.remove('panel-leave');
+      }
     });
+
     document.querySelectorAll('.nav-dot').forEach(dot => {
       dot.classList.toggle('active', dot.dataset.panel === name);
     });
-    lastChange = Date.now();
   }
 
   // ── Advance ──────────────────────────────────────────────────────────────
@@ -38,6 +54,8 @@
     scheduleNext();
   }
 
+  // Per-cycle timers: rotateTimer fires the normal advance; watchdogTimer is a
+  // single safety net that forces an advance if the rotate timer ever stalls.
   function scheduleNext() {
     clearTimeout(rotateTimer);
     clearTimeout(watchdogTimer);
@@ -55,17 +73,6 @@
       if (i !== -1) { idx = i; activate(name); scheduleNext(); }
     });
   });
-
-  // ── Watchdog: detect stuck rotation ─────────────────────────────────────
-  setInterval(() => {
-    const elapsed = Date.now() - lastChange;
-    const name    = sequence[idx] || 'weather';
-    const maxDur  = (CONFIG.TIMING[`panel_${name}`] || 13000) * 2 + 8000;
-    if (elapsed > maxDur) {
-      console.warn('[watchdog] rotation stuck — forcing advance');
-      advance();
-    }
-  }, 10000);
 
   // ── Boot ─────────────────────────────────────────────────────────────────
   sequence = buildSequence();

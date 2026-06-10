@@ -7,7 +7,7 @@
   <title>The Waterfront at Catalina Landing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -69,6 +69,8 @@
           <span class="stat-val" id="w-uv">--</span>
         </div>
       </div>
+      <div id="w-tides" class="tide-row hidden" aria-label="Tide and marine conditions"></div>
+      <div id="w-status" class="weather-status" aria-live="polite"></div>
       <div id="w-forecast" role="list" aria-label="4-day forecast"></div>
     </div>
   </section>
@@ -83,10 +85,13 @@
       <div class="dir-table" id="dir-list" role="list">
         <div class="dir-empty">Loading directory…</div>
       </div>
-      <p class="dir-footer-text">
-        Leasing Inquiries &nbsp;·&nbsp;
-        <strong id="dir-phone">(424) 477-3816</strong>
-      </p>
+      <div class="dir-footer">
+        <p class="dir-footer-text">
+          Leasing Inquiries &nbsp;·&nbsp;
+          <strong id="dir-phone">(424) 477-3816</strong>
+        </p>
+        <div class="dir-qr" id="dir-qr" aria-hidden="true"></div>
+      </div>
     </div>
   </section>
 
@@ -253,6 +258,18 @@
           </div>
         </div>
 
+        <div class="s-section">
+          <p class="s-section-title">Transitions</p>
+          <div class="s-row">
+            <span class="s-label">Panel transition</span>
+            <select id="s-transition" class="s-select">
+              <option value="simple">Simple (fade)</option>
+              <option value="directional">Directional (slide)</option>
+            </select>
+          </div>
+          <p class="s-hint">How panels change from one to the next.</p>
+        </div>
+
         <div class="s-section" id="schedule-section">
           <p class="s-section-title">Auto Schedule</p>
           <div class="s-row">
@@ -271,15 +288,7 @@
               <option value="navy">Navy</option>
             </select>
           </div>
-          <div class="s-row">
-            <span class="s-label">Day starts</span>
-            <input type="time" id="s-wake" class="s-input" value="07:00">
-          </div>
-          <div class="s-row">
-            <span class="s-label">Night starts</span>
-            <input type="time" id="s-sleep" class="s-input" value="20:00">
-          </div>
-          <p class="s-hint">Auto mode switches theme automatically at these times.</p>
+          <p class="s-hint">Auto mode switches theme on the property schedule. Sleep schedule is managed via the property Google Sheet.</p>
         </div>
 
         <div class="s-section">

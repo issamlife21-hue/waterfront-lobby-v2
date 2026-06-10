@@ -5,6 +5,13 @@
   const gridEl   = document.getElementById('events-grid');
   const emailEl  = document.getElementById('events-email');
 
+  // ── Escape Sheet-sourced values before inserting into innerHTML ───────────
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : str;
+    return d.innerHTML;
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────
   function render(events) {
     if (!gridEl) return;
@@ -21,12 +28,12 @@
     gridEl.innerHTML = events.slice(0, 3).map(e => `
       <div class="event-card" role="listitem">
         <div class="event-dateline">
-          <span class="event-date">${e.date_str}</span>
-          ${e.time ? `<span class="event-time">${e.time}</span>` : ''}
+          <span class="event-date">${esc(e.date_str)}</span>
+          ${e.time ? `<span class="event-time">${esc(e.time)}</span>` : ''}
         </div>
-        <div class="event-name">${e.title}</div>
-        ${e.location ? `<div class="event-loc">${e.location}</div>` : ''}
-        ${e.desc     ? `<div class="event-desc">${e.desc}</div>`    : ''}
+        <div class="event-name">${esc(e.title)}</div>
+        ${e.location ? `<div class="event-loc">${esc(e.location)}</div>` : ''}
+        ${e.desc     ? `<div class="event-desc">${esc(e.desc)}</div>`    : ''}
       </div>`).join('');
   }
 
@@ -34,9 +41,9 @@
   function parse(rows) {
     return rows
       .filter(r => {
-        // Active column: TRUE / YES / 1 / empty (blank = active)
-        const a = (r['active'] || r['Active'] || '').toString().toUpperCase();
-        return a === 'TRUE' || a === 'YES' || a === '1' || a === '';
+        // Active column standard: blank = active; FALSE / 0 / NO = inactive
+        const a = (r['active'] || r['Active'] || '').toString().trim().toUpperCase();
+        return !(a === 'FALSE' || a === '0' || a === 'NO');
       })
       .map(r => ({
         title:    r['title']       || r['event']       || r['event title'] || '',

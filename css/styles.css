@@ -4,8 +4,7 @@
    Six themes: obsidian | stone | navy | ivory | slate | midnight
    ============================================================================= */
 
-/* ── Google Fonts ─────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+/* ── Google Fonts loaded via <link> in index.html (no @import — avoids duplicate blocking request) ── */
 
 /* ── Design Tokens ────────────────────────────────────────────────────────── */
 :root {
@@ -41,9 +40,8 @@
   --hud-h:    76px;
   --ticker-h: 52px;
 
-  /* Dynamic overlay/card opacity — controlled by settings sliders */
+  /* Dynamic photo scrim — controlled by settings slider. Card color is set by JS via --bg-card-rgb. */
   --photo-dim:    0.55;   /* 0 = transparent scrim, 1 = full dark */
-  --card-opacity: 0.88;   /* 0 = invisible cards, 1 = fully opaque */
 }
 
 /* ============================================================================
@@ -60,7 +58,7 @@
 
   --text-1:        #EDEAE4;
   --text-2:        #8A8A8A;
-  --text-3:        #484848;
+  --text-3:        #7A7A7A;
 
   --accent:        #EEA651;
   --accent-dim:    rgba(238,166,81,0.12);
@@ -89,7 +87,7 @@
 
   --text-1:        #18262F;
   --text-2:        #4A606E;
-  --text-3:        #96A8B2;
+  --text-3:        #6A8090;
 
   --accent:        #C07D08;
   --accent-dim:    rgba(192,125,8,0.10);
@@ -118,7 +116,7 @@
 
   --text-1:        #D4E8F5;
   --text-2:        #5D8FAD;
-  --text-3:        #2E5570;
+  --text-3:        #5A8AAA;
 
   --accent:        #EEA651;
   --accent-dim:    rgba(238,166,81,0.12);
@@ -147,7 +145,7 @@
 
   --text-1:        #1A1A18;
   --text-2:        #5C6660;
-  --text-3:        #A0ABA5;
+  --text-3:        #708078;
 
   --accent:        #4A7C65;
   --accent-dim:    rgba(74,124,101,0.10);
@@ -176,7 +174,7 @@
 
   --text-1:        #F5F3EF;
   --text-2:        #A09890;
-  --text-3:        #5E5850;
+  --text-3:        #908878;
 
   --accent:        #C8A97E;
   --accent-dim:    rgba(200,169,126,0.12);
@@ -205,7 +203,7 @@
 
   --text-1:        #F0F4F8;
   --text-2:        #6EB5D4;
-  --text-3:        #2E5A72;
+  --text-3:        #5A9AB8;
 
   --accent:        #6EB5D4;
   --accent-dim:    rgba(110,181,212,0.12);
@@ -374,6 +372,15 @@ html, body {
 }
 .panel.active { opacity: 1; pointer-events: auto; }
 
+/* ── Directional transition — current slides out left, next slides in from right (<400ms) ── */
+[data-transition="directional"] .panel {
+  transition: opacity 360ms var(--ease), transform 360ms var(--ease);
+  transform: translateX(48px);
+  will-change: opacity, transform;
+}
+[data-transition="directional"] .panel.active   { transform: translateX(0); }
+[data-transition="directional"] .panel.panel-leave { opacity: 0; transform: translateX(-48px); }
+
 .panel-inner {
   width: 100%; padding: var(--sp-xl) var(--sp-xl);
   display: flex; flex-direction: column; gap: var(--sp-md);
@@ -471,6 +478,37 @@ html, body {
 .fc-hi { font-family: 'DM Mono', monospace; font-size: var(--fs-body); font-weight: 500; color: var(--text-1); }
 .fc-lo { font-family: 'DM Mono', monospace; font-size: var(--fs-label); color: var(--text-3); }
 
+/* Inline SVG weather icons — inherit theme color, consistent stroke */
+.wx-icon { width: 30px; height: 30px; display: block; color: var(--accent); }
+.fc-icon .wx-icon { color: var(--text-1); }
+
+/* ── Tide / marine row (NOAA) ─────────────────────────────────────────────── */
+.tide-row {
+  display: flex; align-items: center; gap: var(--sp-lg);
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: var(--sp-sm) var(--sp-lg);
+  width: fit-content;
+}
+.tide-label {
+  font-size: var(--fs-label); font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); font-family: 'Inter', sans-serif;
+}
+.tide-stat { display: flex; flex-direction: column; gap: 4px; }
+.tide-stat .stat-label {
+  font-size: var(--fs-micro); font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-3); font-family: 'Inter', sans-serif;
+}
+.tide-stat .stat-val { font-family: 'DM Mono', monospace; font-size: var(--fs-body); color: var(--text-1); }
+.tide-row.hidden { display: none; }
+
+/* ── Weather offline / last-updated status line ───────────────────────────── */
+.weather-status {
+  font-size: var(--fs-label); color: var(--text-3);
+  font-family: 'DM Mono', monospace; letter-spacing: 0.03em;
+}
+.weather-status:empty { display: none; }
+
 /* ── Directory ────────────────────────────────────────────────────────────── */
 .dir-heading { display: flex; flex-direction: column; gap: 4px; }
 
@@ -508,9 +546,19 @@ html, body {
   font-size: var(--fs-body); color: var(--accent); white-space: nowrap;
 }
 
+.dir-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-lg); }
 .dir-footer-text { font-size: var(--fs-label); color: var(--text-3); letter-spacing: 0.04em; }
 .dir-footer-text strong { color: var(--text-2); font-weight: 500; }
 .dir-empty { padding: var(--sp-lg); font-size: var(--fs-body); color: var(--text-3); font-style: italic; }
+
+/* Leasing QR — discreet, accent-tinted */
+.dir-qr { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
+.dir-qr svg { width: 48px; height: 48px; display: block; color: var(--accent); }
+.dir-qr-label {
+  font-size: var(--fs-micro); color: var(--text-3);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif; white-space: nowrap;
+}
 
 /* ── Events ───────────────────────────────────────────────────────────────── */
 .events-heading { display: flex; flex-direction: column; gap: 4px; }
@@ -591,20 +639,23 @@ html, body {
 body:hover #settings-trigger { opacity: 0.4; }
 #settings-trigger:hover { opacity: 1 !important; color: var(--accent); border-color: var(--accent-border); }
 
-/* ── Settings overlay ─────────────────────────────────────────────────────── */
-#settings-overlay { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; }
+/* ── Settings overlay — right-anchored, vertically centered, display stays visible behind ── */
+#settings-overlay { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: flex-end; }
 #settings-overlay.hidden { display: none; }
 
+/* Translucent scrim only — NO heavy blur, so the live display remains visible/functional behind the panel */
 .settings-backdrop {
   position: absolute; inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.12);
 }
 
 .settings-sheet {
   position: relative; z-index: 1;
   background: var(--bg-card); border: 1px solid var(--border-md);
-  border-radius: var(--r-xl); width: 540px; max-height: 84vh;
+  border-radius: var(--r-xl);
+  width: 432px;            /* 20% smaller than the old 540px */
+  max-height: 78vh;
+  margin-right: var(--sp-lg);
   overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.45);
 }
 
@@ -663,9 +714,13 @@ body:hover #settings-trigger { opacity: 0.4; }
 .s-row { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-md); padding: 9px 0; }
 .s-label { font-size: 15px; color: var(--text-2); font-weight: 400; }
 
-/* 6-swatch theme picker */
+/* 6-swatch theme picker — intentional 3×2 grid */
 .theme-picker {
-  display: flex; gap: 10px; flex-wrap: wrap; max-width: 280px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 10px;
+  max-width: 240px;
+  justify-items: center;
 }
 
 .theme-swatch {

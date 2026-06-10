@@ -67,9 +67,8 @@ const CONFIG = {
     pin:          '0000',
     show_events:  true,
     show_property:true,
-    sleep_time:   '22:00',
-    wake_time:    '07:00',
     theme_mode:   'manual',     // manual | auto
+    // Sleep/wake times are managed exclusively via the Google Sheet Settings tab.
   },
 
   // ── Fallback directory (if Sheet unreachable) ───────────────────────────────
@@ -127,29 +126,48 @@ async function sheetFetch(gid, timeoutMs = 8000) {
   }
 }
 
-/** Parse CSV text → array of objects keyed by lowercase trimmed headers */
-function csvParse(text) {
-  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
-  if (lines.length < 2) return [];
-  const heads = csvSplit(lines[0]).map(h => h.trim().toLowerCase());
-  return lines.slice(1).map(line => {
-    const vals = csvSplit(line);
-    const row  = {};
-    heads.forEach((h, i) => { row[h] = (vals[i] ?? '').trim(); });
-    return row;
-  }).filter(r => Object.values(r).some(v => v));
+/** Tokenize CSV text → array of rows (each an array of cell strings).
+ *  Processes char-by-char, tracking quote state across line boundaries so a
+ *  cell containing a newline (inside quotes) does not break row splitting.
+ *  Handles "" as an escaped quote and \r\n / \n line endings. */
+function csvTokenize(text) {
+  const rows = [];
+  let row = [];
+  let cur = '';
+  let q   = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { cur += '"'; i++; }   // escaped quote
+        else q = false;
+      } else {
+        cur += c;
+      }
+    } else {
+      if (c === '"')      q = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\n'){ row.push(cur); cur = ''; rows.push(row); row = []; }
+      else if (c === '\r'){ /* ignore — \r\n handled by the \n branch */ }
+      else cur += c;
+    }
+  }
+  row.push(cur);
+  rows.push(row);
+  // Drop empty rows (e.g. from a trailing newline)
+  return rows.filter(r => !(r.length === 1 && r[0].trim() === ''));
 }
 
-/** Split one CSV line respecting quoted commas */
-function csvSplit(line) {
-  const out = []; let cur = '', q = false;
-  for (const c of line) {
-    if (c === '"') { q = !q; continue; }
-    if (c === ',' && !q) { out.push(cur); cur = ''; continue; }
-    cur += c;
-  }
-  out.push(cur);
-  return out;
+/** Parse CSV text → array of objects keyed by lowercase trimmed headers */
+function csvParse(text) {
+  const rows = csvTokenize(text);
+  if (rows.length < 2) return [];
+  const heads = rows[0].map(h => h.trim().toLowerCase());
+  return rows.slice(1).map(cells => {
+    const row = {};
+    heads.forEach((h, i) => { row[h] = (cells[i] ?? '').trim(); });
+    return row;
+  }).filter(r => Object.values(r).some(v => v));
 }
 
 /** localStorage wrapper with JSON + error handling */

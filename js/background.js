@@ -48,8 +48,9 @@
 
     const urls = rows
       .filter(r => {
-        const a = (r['active'] || r['Active'] || '').toString().toUpperCase();
-        return a === 'TRUE' || a === 'YES' || a === '1';
+        // Active column standard: blank = active; FALSE / 0 / NO = inactive
+        const a = (r['active'] || r['Active'] || '').toString().trim().toUpperCase();
+        return !(a === 'FALSE' || a === '0' || a === 'NO');
       })
       .map(r => r['url'] || r['URL'] || r['link'] || '')
       .filter(u => u.startsWith('http'));
