@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="obsidian" data-building="310">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1">
+  <meta name="description" content="The Waterfront at Catalina Landing — Lobby Display">
+  <title>The Waterfront at Catalina Landing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ── Background ──────────────────────────────────────────────────────── -->
+  <div id="bg-layer" aria-hidden="true">
+    <div class="bg-slide active" id="bg-a"></div>
+    <div class="bg-slide"        id="bg-b"></div>
+    <div class="bg-scrim"></div>
+  </div>
+
+  <!-- ── HUD — Top ───────────────────────────────────────────────────────── -->
+  <header id="hud">
+    <div id="logo" role="img" aria-label="The Waterfront at Catalina Landing">
+      <img id="logo-mark" src="assets/logo.svg" alt="" width="44" height="44">
+      <div id="logo-text">
+        <span id="logo-name">The Waterfront</span>
+        <span id="logo-sub">at Catalina Landing</span>
+      </div>
+    </div>
+    <div id="hud-clock" aria-live="polite" aria-atomic="true">
+      <span id="clock-time"></span>
+      <span id="clock-date"></span>
+    </div>
+  </header>
+
+  <!-- ── Panel: Weather ──────────────────────────────────────────────────── -->
+  <section id="panel-weather" class="panel active" aria-label="Current weather">
+    <div class="panel-inner">
+      <span class="eyebrow">Long Beach, California</span>
+      <div class="weather-main">
+        <div class="weather-temp-block">
+          <span id="w-temp" aria-label="Temperature">--</span>
+          <span class="weather-unit" aria-hidden="true">°F</span>
+        </div>
+        <div class="weather-meta">
+          <span id="w-condition">Loading</span>
+          <span class="weather-loc">Long Beach, CA</span>
+        </div>
+      </div>
+      <div class="weather-stats" role="list">
+        <div class="stat" role="listitem">
+          <span class="stat-label">Feels like</span>
+          <span class="stat-val" id="w-feels">--</span>
+        </div>
+        <div class="stat-div" aria-hidden="true"></div>
+        <div class="stat" role="listitem">
+          <span class="stat-label">Humidity</span>
+          <span class="stat-val" id="w-humidity">--</span>
+        </div>
+        <div class="stat-div" aria-hidden="true"></div>
+        <div class="stat" role="listitem">
+          <span class="stat-label">Wind</span>
+          <span class="stat-val" id="w-wind">--</span>
+        </div>
+        <div class="stat-div" aria-hidden="true"></div>
+        <div class="stat" role="listitem">
+          <span class="stat-label">UV Index</span>
+          <span class="stat-val" id="w-uv">--</span>
+        </div>
+      </div>
+      <div id="w-forecast" role="list" aria-label="4-day forecast"></div>
+    </div>
+  </section>
+
+  <!-- ── Panel: Directory ────────────────────────────────────────────────── -->
+  <section id="panel-directory" class="panel" aria-label="Building directory">
+    <div class="panel-inner">
+      <div class="dir-heading">
+        <span class="eyebrow">Building Directory</span>
+        <span class="dir-building" id="dir-building-name">310 Golden Shore</span>
+      </div>
+      <div class="dir-table" id="dir-list" role="list">
+        <div class="dir-empty">Loading directory…</div>
+      </div>
+      <p class="dir-footer-text">
+        Leasing Inquiries &nbsp;·&nbsp;
+        <strong id="dir-phone">(424) 477-3816</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Panel: Events ───────────────────────────────────────────────────── -->
+  <section id="panel-events" class="panel" aria-label="Upcoming events">
+    <div class="panel-inner">
+      <div class="events-heading">
+        <span class="eyebrow">At the Waterfront</span>
+        <span class="events-title">Upcoming Events</span>
+      </div>
+      <div class="events-grid" id="events-grid" role="list">
+        <div class="events-empty">Loading events…</div>
+      </div>
+      <p class="events-footer-text" id="events-footer">
+        To post an event &nbsp;·&nbsp;
+        <strong id="events-email">lobby@ticapital.com</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Panel: Property ─────────────────────────────────────────────────── -->
+  <section id="panel-property" class="panel panel-ambient" aria-label="Property">
+    <div class="property-caption">
+      <span class="property-cap-name" id="prop-name">The Waterfront at Catalina Landing</span>
+      <span class="property-cap-addr" id="prop-addr">310 – 340 Golden Shore · Long Beach, CA</span>
+    </div>
+  </section>
+
+  <!-- ── Ticker — Bottom ─────────────────────────────────────────────────── -->
+  <footer id="ticker" aria-label="Status bar">
+    <div class="ticker-segment">
+      <span class="ticker-label">Weather</span>
+      <span class="ticker-value" id="ticker-temp">--°F</span>
+      <div class="ticker-sep" aria-hidden="true"></div>
+      <span class="ticker-value" id="ticker-cond">--</span>
+    </div>
+    <div class="ticker-segment">
+      <span class="ticker-label">Campus</span>
+      <span class="ticker-value">310 – 340 Golden Shore · Long Beach</span>
+    </div>
+    <div class="ticker-segment" style="border-right:none; flex:1; justify-content:flex-end;">
+      <nav id="ticker-nav" aria-label="Panel navigation">
+        <button class="nav-dot active" data-panel="weather"   aria-label="Weather panel"></button>
+        <button class="nav-dot"        data-panel="directory" aria-label="Directory panel"></button>
+        <button class="nav-dot"        data-panel="events"    aria-label="Events panel"></button>
+        <button class="nav-dot"        data-panel="property"  aria-label="Property panel"></button>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- ── Settings gear ───────────────────────────────────────────────────── -->
+  <button id="settings-trigger" aria-label="Open display settings" title="Settings">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <!-- ── Settings overlay ────────────────────────────────────────────────── -->
+  <div id="settings-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="Display settings">
+    <div class="settings-backdrop" id="settings-backdrop"></div>
+    <div class="settings-sheet">
+
+      <div class="settings-head">
+        <span class="settings-head-title">Display Settings</span>
+        <button class="settings-x" id="settings-close" aria-label="Close settings">✕</button>
+      </div>
+
+      <!-- PIN gate -->
+      <div id="pin-gate">
+        <p class="pin-prompt">Enter PIN to access settings</p>
+        <div class="pin-dots" id="pin-dots">
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+        </div>
+        <div class="pin-pad">
+          <button class="pin-key" data-d="1">1</button>
+          <button class="pin-key" data-d="2">2</button>
+          <button class="pin-key" data-d="3">3</button>
+          <button class="pin-key" data-d="4">4</button>
+          <button class="pin-key" data-d="5">5</button>
+          <button class="pin-key" data-d="6">6</button>
+          <button class="pin-key" data-d="7">7</button>
+          <button class="pin-key" data-d="8">8</button>
+          <button class="pin-key" data-d="9">9</button>
+          <button class="pin-key pin-action" data-a="clear">⌫</button>
+          <button class="pin-key" data-d="0">0</button>
+          <button class="pin-key pin-enter pin-action" data-a="enter">→</button>
+        </div>
+        <p class="pin-err hidden" id="pin-err">Incorrect PIN — try again</p>
+      </div>
+
+      <!-- Settings body (unlocked) -->
+      <div id="settings-body" class="hidden">
+
+        <div class="s-section">
+          <p class="s-section-title">This Screen</p>
+          <div class="s-row">
+            <span class="s-label">Building</span>
+            <select id="s-building" class="s-select">
+              <option value="310">310 Golden Shore</option>
+              <option value="320">320 Golden Shore</option>
+              <option value="330">330 Golden Shore</option>
+              <option value="340">340 Golden Shore</option>
+            </select>
+          </div>
+          <div class="s-row" style="padding-top: 18px;">
+            <span class="s-label">Theme</span>
+            <div class="theme-picker">
+              <button class="theme-swatch active" data-theme="obsidian" title="Obsidian">
+                <span class="theme-swatch-label">Obsidian</span>
+              </button>
+              <button class="theme-swatch" data-theme="stone" title="Stone">
+                <span class="theme-swatch-label">Stone</span>
+              </button>
+              <button class="theme-swatch" data-theme="navy" title="Navy">
+                <span class="theme-swatch-label">Navy</span>
+              </button>
+            </div>
+          </div>
+          <div class="s-row" style="margin-top:6px;">
+            <span class="s-label">Theme mode</span>
+            <select id="s-theme-mode" class="s-select">
+              <option value="manual">Manual (always use selected theme)</option>
+              <option value="auto">Auto (switch on schedule)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="s-section" id="schedule-section">
+          <p class="s-section-title">Auto Schedule</p>
+          <div class="s-row">
+            <span class="s-label">Daytime theme</span>
+            <select id="s-day-theme" class="s-select">
+              <option value="stone">Stone</option>
+              <option value="obsidian">Obsidian</option>
+              <option value="navy">Navy</option>
+            </select>
+          </div>
+          <div class="s-row">
+            <span class="s-label">Nighttime theme</span>
+            <select id="s-night-theme" class="s-select">
+              <option value="obsidian">Obsidian</option>
+              <option value="stone">Stone</option>
+              <option value="navy">Navy</option>
+            </select>
+          </div>
+          <div class="s-row">
+            <span class="s-label">Day starts</span>
+            <input type="time" id="s-wake" class="s-input" value="07:00">
+          </div>
+          <div class="s-row">
+            <span class="s-label">Night starts</span>
+            <input type="time" id="s-sleep" class="s-input" value="20:00">
+          </div>
+          <p class="s-hint">Auto mode switches theme automatically at these times.</p>
+        </div>
+
+        <div class="s-section">
+          <p class="s-section-title">Panels</p>
+          <div class="s-row">
+            <span class="s-label">Show Events panel</span>
+            <label class="s-switch">
+              <input type="checkbox" id="s-show-events" checked>
+              <span class="s-track"></span>
+            </label>
+          </div>
+          <div class="s-row">
+            <span class="s-label">Show Property panel</span>
+            <label class="s-switch">
+              <input type="checkbox" id="s-show-property" checked>
+              <span class="s-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="s-section">
+          <p class="s-section-title">Edit Building Info</p>
+          <p class="s-hint" style="margin-bottom:12px;">Changes what's displayed on screen. No code needed.</p>
+          <div class="s-text-group">
+            <div class="s-text-row">
+              <span class="s-text-label">Logo name</span>
+              <input type="text" id="info-logo-name" class="s-input s-input-wide" placeholder="The Waterfront">
+            </div>
+            <div class="s-text-row">
+              <span class="s-text-label">Logo subtitle</span>
+              <input type="text" id="info-logo-sub" class="s-input s-input-wide" placeholder="at Catalina Landing">
+            </div>
+            <div class="s-text-row">
+              <span class="s-text-label">Leasing phone</span>
+              <input type="text" id="info-phone" class="s-input s-input-wide" placeholder="(424) 477-3816">
+            </div>
+            <div class="s-text-row">
+              <span class="s-text-label">Events email</span>
+              <input type="text" id="info-email" class="s-input s-input-wide" placeholder="lobby@ticapital.com">
+            </div>
+            <div class="s-text-row">
+              <span class="s-text-label">Property address</span>
+              <input type="text" id="info-addr" class="s-input s-input-wide" placeholder="310–340 Golden Shore">
+            </div>
+          </div>
+        </div>
+
+        <div class="s-section">
+          <p class="s-section-title">Security</p>
+          <div class="s-row">
+            <span class="s-label">New PIN (4 digits)</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="password" id="s-new-pin" class="s-input" maxlength="4" placeholder="••••" style="width:90px;">
+              <button class="s-btn s-btn-inline" id="s-save-pin-btn">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-actions">
+          <button class="s-btn s-btn-primary" id="s-save">Save &amp; Close</button>
+          <button class="s-btn s-btn-danger"  id="s-reset">Reset all</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sleep Screen ─────────────────────────────────────────────────────── -->
+  <div id="sleep-screen" class="hidden" aria-hidden="true">
+    <div class="sleep-inner">
+      <div class="sleep-mark"></div>
+      <span class="sleep-time" id="sleep-time-display"></span>
+    </div>
+  </div>
+
+  <!-- ── Scripts ─────────────────────────────────────────────────────────── -->
+  <script src="js/config.js"></script>
+  <script src="js/clock.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/directory.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/rotation.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

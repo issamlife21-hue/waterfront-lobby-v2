@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" fill="none">
+  <!-- Waterfront logo placeholder — replace this file with the real logo SVG -->
+  <!-- Keep viewBox="0 0 44 44" or update CSS width/height in styles.css -->
+  <circle cx="22" cy="22" r="21" stroke="currentColor" stroke-opacity="0.25" stroke-width="1"/>
+  <path d="M8 26 C11 22, 15 20, 19 23 C23 26, 27 24, 31 21 C33 19.5, 35 19, 36 20"
+        stroke="#EEA651" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M8 30 C11 26, 15 24, 19 27 C23 30, 27 28, 31 25 C33 23.5, 35 23, 36 24"
+        stroke="currentColor" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <path d="M14 18 L22 12 L30 18" stroke="currentColor" stroke-opacity="0.5"
+        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
