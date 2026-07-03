@@ -199,17 +199,12 @@
 
   function renderTides(t) {
     if (!tideEl || !t) return;
-    const parts = [`<span class="tide-label">Tides · Los Angeles Harbor</span>`];
-    if (t.current != null) {
-      parts.push(`<div class="tide-stat"><span class="stat-label">Current</span><span class="stat-val">${t.current} ft</span></div>`);
-    }
-    if (t.high) {
-      parts.push(`<div class="tide-stat"><span class="stat-label">Next High</span><span class="stat-val">${t.high.time} · ${t.high.ft} ft</span></div>`);
-    }
-    if (t.low) {
-      parts.push(`<div class="tide-stat"><span class="stat-label">Next Low</span><span class="stat-val">${t.low.time} · ${t.low.ft} ft</span></div>`);
-    }
-    tideEl.innerHTML = parts.join('');
+    // Single quiet line: "Tides · High 4:12 PM · Low 10:38 PM"
+    const segs = [];
+    if (t.high) segs.push(`High <b>${t.high.time}</b>`);
+    if (t.low)  segs.push(`Low <b>${t.low.time}</b>`);
+    if (!segs.length) { tideEl.classList.add('hidden'); return; }
+    tideEl.innerHTML = `<span class="tide-line">Tides · ${segs.join(' · ')}</span>`;
     tideEl.classList.remove('hidden');
   }
 

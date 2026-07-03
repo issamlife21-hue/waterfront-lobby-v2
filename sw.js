@@ -1,6 +1,6 @@
 // sw.js — Service Worker, offline app shell caching
 // IMPORTANT: bump CACHE_VERSION on every deployment that changes any file below
-const CACHE_VERSION = 'wf-v2-5';
+const CACHE_VERSION = 'wf-v2-6';
 const CACHE_NAME    = CACHE_VERSION;
 
 const APP_SHELL = [

@@ -33,7 +33,6 @@
         </div>
         <div class="event-name">${esc(e.title)}</div>
         ${e.location ? `<div class="event-loc">${esc(e.location)}</div>` : ''}
-        ${e.desc     ? `<div class="event-desc">${esc(e.desc)}</div>`    : ''}
       </div>`).join('');
   }
 

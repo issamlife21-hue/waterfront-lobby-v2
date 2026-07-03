@@ -16,7 +16,7 @@
   let showEvents  = Store.get('wf_show_events',  CONFIG.DEFAULTS.show_events);
   let showProp    = Store.get('wf_show_property',CONFIG.DEFAULTS.show_property);
   let photoDim    = Store.get('wf_photo_dim',    55);   // 0–100
-  let cardOpacity = Store.get('wf_card_opacity', 88);   // 0–100
+  let cardOpacity = Store.get('wf_card_opacity', 85);   // 0–100
   let transition  = Store.get('wf_transition',   'simple');  // simple | directional
 
   // Building info

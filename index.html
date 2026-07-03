@@ -37,7 +37,7 @@
   <!-- ── Panel: Weather ──────────────────────────────────────────────────── -->
   <section id="panel-weather" class="panel active" aria-label="Current weather">
     <div class="panel-inner">
-      <span class="eyebrow">Long Beach, California</span>
+      <span class="eyebrow">Long Beach</span>
       <div class="weather-main">
         <div class="weather-temp-block">
           <span id="w-temp" aria-label="Temperature">--</span>
@@ -45,7 +45,6 @@
         </div>
         <div class="weather-meta">
           <span id="w-condition">Loading</span>
-          <span class="weather-loc">Long Beach, CA</span>
         </div>
       </div>
       <div class="weather-stats" role="list">
@@ -63,11 +62,6 @@
           <span class="stat-label">Wind</span>
           <span class="stat-val" id="w-wind">--</span>
         </div>
-        <div class="stat-div" aria-hidden="true"></div>
-        <div class="stat" role="listitem">
-          <span class="stat-label">UV Index</span>
-          <span class="stat-val" id="w-uv">--</span>
-        </div>
       </div>
       <div id="w-tides" class="tide-row hidden" aria-label="Tide and marine conditions"></div>
       <div id="w-status" class="weather-status" aria-live="polite"></div>
@@ -79,7 +73,6 @@
   <section id="panel-directory" class="panel" aria-label="Building directory">
     <div class="panel-inner">
       <div class="dir-heading">
-        <span class="eyebrow">Building Directory</span>
         <span class="dir-building" id="dir-building-name">310 Golden Shore</span>
       </div>
       <div class="dir-table" id="dir-list" role="list">
@@ -99,7 +92,6 @@
   <section id="panel-events" class="panel" aria-label="Upcoming events">
     <div class="panel-inner">
       <div class="events-heading">
-        <span class="eyebrow">At the Waterfront</span>
         <span class="events-title">Upcoming Events</span>
       </div>
       <div class="events-grid" id="events-grid" role="list">
@@ -116,7 +108,6 @@
   <section id="panel-property" class="panel panel-ambient" aria-label="Property">
     <div class="property-caption">
       <span class="property-cap-name" id="prop-name">The Waterfront at Catalina Landing</span>
-      <span class="property-cap-addr" id="prop-addr">310 – 340 Golden Shore · Long Beach, CA</span>
     </div>
   </section>
 
@@ -127,10 +118,6 @@
       <span class="ticker-value" id="ticker-temp">--°F</span>
       <div class="ticker-sep" aria-hidden="true"></div>
       <span class="ticker-value" id="ticker-cond">--</span>
-    </div>
-    <div class="ticker-segment">
-      <span class="ticker-label">Campus</span>
-      <span class="ticker-value">310 – 340 Golden Shore · Long Beach</span>
     </div>
     <div class="ticker-segment" style="border-right:none; flex:1; justify-content:flex-end;">
       <nav id="ticker-nav" aria-label="Panel navigation">
@@ -251,9 +238,9 @@
           <div class="s-slider-row" style="margin-top:12px;">
             <div class="s-slider-top">
               <span class="s-label">Card opacity</span>
-              <span class="s-slider-val" id="s-card-val">88%</span>
+              <span class="s-slider-val" id="s-card-val">85%</span>
             </div>
-            <input type="range" id="s-card-slider" min="20" max="100" value="88" step="4">
+            <input type="range" id="s-card-slider" min="20" max="100" value="85" step="4">
             <p class="s-hint">How solid the info boxes appear over the photo.</p>
           </div>
         </div>
