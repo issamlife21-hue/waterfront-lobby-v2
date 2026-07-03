@@ -1,6 +1,6 @@
 // sw.js — Service Worker, offline app shell caching
 // IMPORTANT: bump CACHE_VERSION on every deployment that changes any file below
-const CACHE_VERSION = 'wf-v2-4';
+const CACHE_VERSION = 'wf-v2-5';
 const CACHE_NAME    = CACHE_VERSION;
 
 const APP_SHELL = [
@@ -44,14 +44,15 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = e.request.url;
 
-  // Never cache: Sheet data, weather API, external images
+  // Never cache: Sheet data, weather API, external images (incl. property logo mark)
   const isLiveData = (
     url.includes('docs.google.com') ||
     url.includes('api.open-meteo.com') ||
     url.includes('tidesandcurrents.noaa.gov') ||
     url.includes('wp.com') ||
     url.includes('smushcdn') ||
-    url.includes('hollywoodlocations')
+    url.includes('hollywoodlocations') ||
+    url.includes('waterfrontcatalinalanding.com')
   );
 
   if (isLiveData) {
