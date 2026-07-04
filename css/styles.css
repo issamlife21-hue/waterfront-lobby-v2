@@ -61,9 +61,9 @@
   --text-2:        rgba(235,235,245,0.70);
   --text-3:        rgba(235,235,245,0.52);
 
-  --accent:        #E8E8ED;
-  --accent-dim:    rgba(232,232,237,0.10);
-  --accent-border: rgba(232,232,237,0.22);
+  --accent:        #7FB4D9;
+  --accent-dim:    rgba(127,180,217,0.12);
+  --accent-border: rgba(127,180,217,0.25);
 
   --border:        rgba(255,255,255,0.08);
   --border-md:     rgba(255,255,255,0.14);
@@ -73,9 +73,9 @@
   --ticker-bg:     rgba(20,20,24,0.85);
   --ticker-border: rgba(255,255,255,0.12);
 
-  --scrim-color:   10,10,12;
+  --scrim-color:   19,24,28;
   --sleep-bg:      #000;
-  --sleep-text:    rgba(232,232,237,0.30);
+  --sleep-text:    rgba(127,180,217,0.50);
 
   /* Apple glass material (dark) */
   --glass-grad:      linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
@@ -97,9 +97,9 @@
   --text-2:        rgba(60,60,67,0.75);
   --text-3:        rgba(60,60,67,0.66);
 
-  --accent:        #6F6350;
-  --accent-dim:    rgba(111,99,80,0.10);
-  --accent-border: rgba(111,99,80,0.22);
+  --accent:        #3E5C82;
+  --accent-dim:    rgba(62,92,130,0.12);
+  --accent-border: rgba(62,92,130,0.25);
 
   --border:        rgba(0,0,0,0.06);
   --border-md:     rgba(0,0,0,0.12);
@@ -111,7 +111,7 @@
 
   --scrim-color:   242,240,235;
   --sleep-bg:      #F2F0EB;
-  --sleep-text:    rgba(111,99,80,0.40);
+  --sleep-text:    rgba(62,92,130,0.50);
 
   /* Apple glass material (light) */
   --glass-grad:      linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%);
@@ -133,9 +133,9 @@
   --text-2:        rgba(235,235,245,0.70);
   --text-3:        rgba(235,235,245,0.52);
 
-  --accent:        #A8C8DC;
-  --accent-dim:    rgba(168,200,220,0.10);
-  --accent-border: rgba(168,200,220,0.22);
+  --accent:        #98C0DA;
+  --accent-dim:    rgba(152,192,218,0.12);
+  --accent-border: rgba(152,192,218,0.25);
 
   --border:        rgba(255,255,255,0.08);
   --border-md:     rgba(255,255,255,0.14);
@@ -145,9 +145,9 @@
   --ticker-bg:     rgba(20,20,24,0.85);
   --ticker-border: rgba(255,255,255,0.12);
 
-  --scrim-color:   12,22,34;
+  --scrim-color:   23,36,49;
   --sleep-bg:      #060D16;
-  --sleep-text:    rgba(168,200,220,0.28);
+  --sleep-text:    rgba(152,192,218,0.50);
 
   /* Apple glass material (dark) */
   --glass-grad:      linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
@@ -169,9 +169,9 @@
   --text-2:        rgba(60,60,67,0.75);
   --text-3:        rgba(60,60,67,0.66);
 
-  --accent:        #5F6E64;
-  --accent-dim:    rgba(95,110,100,0.10);
-  --accent-border: rgba(95,110,100,0.22);
+  --accent:        #37688C;
+  --accent-dim:    rgba(55,104,140,0.12);
+  --accent-border: rgba(55,104,140,0.25);
 
   --border:        rgba(0,0,0,0.06);
   --border-md:     rgba(0,0,0,0.12);
@@ -183,7 +183,7 @@
 
   --scrim-color:   247,246,243;
   --sleep-bg:      #F7F6F3;
-  --sleep-text:    rgba(95,110,100,0.35);
+  --sleep-text:    rgba(55,104,140,0.50);
 
   /* Apple glass material (light) */
   --glass-grad:      linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%);
@@ -205,9 +205,9 @@
   --text-2:        rgba(235,235,245,0.70);
   --text-3:        rgba(235,235,245,0.52);
 
-  --accent:        #D6CDBE;
-  --accent-dim:    rgba(214,205,190,0.10);
-  --accent-border: rgba(214,205,190,0.22);
+  --accent:        #E0B36A;
+  --accent-dim:    rgba(224,179,106,0.12);
+  --accent-border: rgba(224,179,106,0.25);
 
   --border:        rgba(255,255,255,0.08);
   --border-md:     rgba(255,255,255,0.14);
@@ -217,9 +217,9 @@
   --ticker-bg:     rgba(20,20,24,0.85);
   --ticker-border: rgba(255,255,255,0.12);
 
-  --scrim-color:   28,28,30;
+  --scrim-color:   44,40,36;
   --sleep-bg:      #141416;
-  --sleep-text:    rgba(214,205,190,0.30);
+  --sleep-text:    rgba(224,179,106,0.50);
 
   /* Apple glass material (dark) */
   --glass-grad:      linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
@@ -241,9 +241,9 @@
   --text-2:        rgba(235,235,245,0.70);
   --text-3:        rgba(235,235,245,0.52);
 
-  --accent:        #9BD1E8;
-  --accent-dim:    rgba(155,209,232,0.10);
-  --accent-border: rgba(155,209,232,0.22);
+  --accent:        #98C0DA;
+  --accent-dim:    rgba(152,192,218,0.12);
+  --accent-border: rgba(152,192,218,0.25);
 
   --border:        rgba(255,255,255,0.08);
   --border-md:     rgba(255,255,255,0.14);
@@ -253,9 +253,9 @@
   --ticker-bg:     rgba(20,20,24,0.85);
   --ticker-border: rgba(255,255,255,0.12);
 
-  --scrim-color:   0,0,0;
+  --scrim-color:   12,15,17;
   --sleep-bg:      #000;
-  --sleep-text:    rgba(155,209,232,0.30);
+  --sleep-text:    rgba(152,192,218,0.50);
 
   /* Apple glass material (dark) */
   --glass-grad:      linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
@@ -403,13 +403,15 @@ html, body {
 .ticker-label {
   font-size: var(--fs-micro); font-weight: 600;
   letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--text-3); font-family: 'Inter', sans-serif;
+  color: var(--accent); font-family: 'Inter', sans-serif;
 }
 
 .ticker-value {
   font-family: 'DM Mono', monospace;
   font-size: var(--fs-label); color: var(--text-2);
 }
+/* Live temp gets accent — a subtle line of life at the bottom of every panel */
+#ticker-temp { color: var(--accent); }
 
 .ticker-sep { width: 1px; height: 16px; background: var(--border-md); flex-shrink: 0; }
 
@@ -455,6 +457,15 @@ html, body {
   color: var(--accent); display: block; margin-bottom: 6px;
   font-family: 'Inter', sans-serif;
 }
+/* Weather eyebrow reads a touch louder — it sits above the hero moment */
+#panel-weather .eyebrow { font-size: var(--fs-label); letter-spacing: 0.20em; }
+
+/* Wave divider — quiet brand signature echoing the marina/logo mark */
+.wave-divider {
+  display: block; width: 120px; height: 10px;
+  margin: 16px 0; color: var(--accent); opacity: 0.35;
+}
+.wave-divider svg { display: block; width: 120px; height: 10px; }
 
 @keyframes panelIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -470,9 +481,14 @@ html, body {
 #w-temp {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(112px, 11.5vw, 168px); font-weight: 300;
-  color: var(--text-1);
+  color: var(--accent);
   letter-spacing: -0.03em; line-height: 0.88;
 }
+/* Soft marina-blue glow on dark themes — the eye-catcher for passers-by */
+[data-theme="obsidian"] #w-temp { text-shadow: 0 2px 24px rgba(127,180,217,0.30); }
+[data-theme="navy"]     #w-temp { text-shadow: 0 2px 24px rgba(152,192,218,0.30); }
+[data-theme="midnight"] #w-temp { text-shadow: 0 2px 24px rgba(152,192,218,0.30); }
+[data-theme="slate"]    #w-temp { text-shadow: 0 2px 24px rgba(224,179,106,0.30); }
 
 .weather-unit {
   font-family: 'Inter', sans-serif;
@@ -588,7 +604,7 @@ html, body {
 .dir-building {
   font-family: 'Cormorant Garamond', serif;
   font-size: var(--fs-title); font-weight: 400;
-  color: var(--text-1); letter-spacing: 0.01em; line-height: 1.1;
+  color: var(--accent); letter-spacing: 0.01em; line-height: 1.1;
 }
 
 .dir-table {
@@ -658,10 +674,13 @@ html, body {
 
 .event-dateline { display: flex; align-items: center; gap: var(--sp-sm); }
 
+/* Date chip — a colored anchor point per card that draws the eye */
 .event-date {
   font-family: 'DM Mono', monospace; font-size: var(--fs-label);
-  font-weight: 500; color: var(--text-2);
+  font-weight: 500; color: var(--accent);
   letter-spacing: 0.02em; text-transform: uppercase;
+  background: var(--accent-dim); border: 0.5px solid var(--accent-border);
+  padding: 8px 14px; border-radius: 10px;
 }
 
 .event-time { font-family: 'DM Mono', monospace; font-size: var(--fs-label); color: var(--text-3); }
@@ -926,8 +945,15 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .sleep-mark {
   width: 64px; height: 64px; border-radius: 50%;
   background: url('https://waterfrontcatalinalanding.com/wp-content/uploads/2023/06/2023-mark-catalina_landing-lght-circle-1080px-150x150.png') center / contain no-repeat;
-  opacity: 0.32;
+  opacity: 0.45;
+  animation: sleepBreathe 8s ease-in-out infinite;
 }
+/* Calm branded screensaver — slow breathing on the mark */
+@keyframes sleepBreathe {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) { .sleep-mark { animation: none; } }
 /* Light sleep backgrounds: darken the white mark so it stays visible */
 [data-theme="stone"] .sleep-mark,
 [data-theme="ivory"] .sleep-mark { filter: brightness(0.25); opacity: 0.4; }
